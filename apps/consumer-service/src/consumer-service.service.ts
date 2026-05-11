@@ -1,7 +1,6 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
 import {
-  GetFilteredUsersResponse,
   UserService,
 } from './consumer-service.interface';
 import { firstValueFrom } from 'rxjs';

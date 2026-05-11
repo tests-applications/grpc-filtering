@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { ProducerService } from './producer-service.service';
 import { GrpcMethod } from '@nestjs/microservices';
-import { GetFilteredUsersResponse } from '../../consumer-service/src/consumer-service.interface';
+import { GetFilteredUsersResponse } from './producer-service.interface';
 
 @Controller()
 export class ProducerServiceController {
