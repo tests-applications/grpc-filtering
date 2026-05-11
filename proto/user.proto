@@ -1,19 +1,19 @@
 syntax = "proto3";
 
-package user;
+package user.v1;
 
 import "google/protobuf/empty.proto";
 
 service UserService {
-  rpc GetFilteredUsers (GetFilteredUsersRequestList) returns (google.protobuf.Empty);
+  rpc GetFilteredUsers (google.protobuf.Empty) returns (ListUsersResponse);
 }
 
-message GetFilteredUsersRequestList {
-  repeated GetFilteredUsersRequest users = 1;
-}
-
-message GetFilteredUsersRequest {
+message User {
   int32 id = 1;
   string name = 2;
   int32 age = 3;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
 }

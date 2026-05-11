@@ -1,13 +1,10 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/grpc-filtering/src",
-  "compilerOptions": {
-    "deleteOutDir": true,
-    "tsConfigPath": "apps/grpc-filtering/tsconfig.app.json"
-  },
   "monorepo": true,
-  "root": "apps/grpc-filtering",
+  "compilerOptions": {
+    "deleteOutDir": true
+  },
   "projects": {
     "consumer-service": {
       "type": "application",

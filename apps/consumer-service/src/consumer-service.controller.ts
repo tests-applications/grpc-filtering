@@ -1,16 +1,14 @@
-import { Controller } from '@nestjs/common';
-import { ConsumerServiceService } from './consumer-service.service';
-import { GrpcMethod } from '@nestjs/microservices';
-import type { GetFilteredUsersType } from './consumer-service.type';
+import { Controller, Get } from '@nestjs/common';
+import { ConsumerService } from './consumer-service.service';
 
 @Controller()
 export class ConsumerServiceController {
   constructor(
-    private readonly consumerServiceService: ConsumerServiceService
+    private readonly consumerService: ConsumerService
   ) {}
 
-  @GrpcMethod('UserService', 'GetFilteredUsers')
-  async getFilteredUsers(data: GetFilteredUsersType) {
-    return await this.consumerServiceService.getFilteredUsers(data);
+  @Get('filtered-users')
+  async getFilteredUsers() {
+    return await this.consumerService.getFilteredUsers();
   }
 }

@@ -1,18 +1,23 @@
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConsumerServiceModule } from './consumer-service.module';
-import { Transport } from '@nestjs/microservices';
-import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice(ConsumerServiceModule, {
-    transport: Transport.GRPC,
-    options: {
-      package: 'user',
-      protoPath: join(__dirname, '../../../proto/user.proto'),
-      url: '0.0.0.0:50051',
-    },
-  });
+  const PORT = process.env.PORT || 30110;
+  const app = await NestFactory.create(ConsumerServiceModule);
 
-  await app.listen();
+  const config = new DocumentBuilder()
+    .setTitle('GRPC-Filtering')
+    .setDescription('Documentation')
+    .setVersion('1.0')
+    .build();
+
+  const document = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('/api/docs', app, document);
+
+  await app.listen(PORT);
+
+  console.log(`Swagger docs: http://localhost:${PORT}/api/docs`);
+  console.log(`Listen port ${PORT}`);
 }
 bootstrap();

@@ -1,31 +1,43 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import type { ClientGrpc } from '@nestjs/microservices';
 import {
-  GetFilteredUsersRequest,
-  GetFilteredUsersRequestList,
-  UserService,
-} from './producer-service.interface';
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { join } from 'path';
 import * as fs from 'fs/promises';
+import { ConfigService } from '@nestjs/config';
+import { User } from './producer-service.interface';
+
 
 @Injectable()
-export class ProducerServiceService implements OnModuleInit {
-  private userService: UserService;
+export class ProducerService {
+  private readonly logger = new Logger(ProducerService.name);
 
   constructor(
-    @Inject('USER_PACKAGE')
-    private client: ClientGrpc
+    private readonly configService: ConfigService,
   ) {}
 
-  onModuleInit() {
-    this.userService = this.client.getService<UserService>('UserService');
-  }
+  async getFilteredUsers() {
+    try {
+      const file = await fs.readFile(
+        join(
+          process.cwd(),
+          this.configService.get<string>('USERS_FILE_PATH')
+        ),
+        'utf8'
+      );
 
-  async readAndFilter() {
-    const file = await fs.readFile(join(process.cwd(), 'apps/producer-service/src/data', 'user.json'), 'utf8');
-    const users = JSON.parse(file);
-    const filteredUsers = users.filter(user => user.age > 18);
+      const users: User[] = JSON.parse(file);
 
-    this.userService.getFilteredUsers({ users: filteredUsers }).subscribe();
+      const filteredUsers = users.filter((user: User) => user.age > 18);
+
+      return {
+        users: filteredUsers,
+      };
+    } catch (error) {
+      this.logger.error('Failed to process users.json', error.stack);
+
+      throw new InternalServerErrorException('Failed to process users');
+    }
   }
 }

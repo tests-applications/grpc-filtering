@@ -1,14 +1,16 @@
-import { Controller, Get } from '@nestjs/common';
-import { ProducerServiceService } from './producer-service.service';
+import { Controller } from '@nestjs/common';
+import { ProducerService } from './producer-service.service';
+import { GrpcMethod } from '@nestjs/microservices';
+import { GetFilteredUsersResponse } from '../../consumer-service/src/consumer-service.interface';
 
 @Controller()
 export class ProducerServiceController {
   constructor(
-    private readonly producerServiceService: ProducerServiceService,
+    private readonly producerService: ProducerService,
   ) {}
 
-  @Get('start')
-  readAndFilter() {
-    return this.producerServiceService.readAndFilter();
+  @GrpcMethod('UserService', 'GetFilteredUsers')
+  async getFilteredUsers(): Promise<GetFilteredUsersResponse> {
+    return await this.producerService.getFilteredUsers();
   }
 }
