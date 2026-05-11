@@ -1,0 +1,18 @@
+services:
+  producer-service:
+    container_name: producer-service
+    build:
+      context: .
+      dockerfile: ./apps/producer-service/Dockerfile
+    ports:
+      - "30110:30110"
+    environment:
+      OPTION_URL: consumer-service:50051
+
+  consumer-service:
+      container_name: consumer-service
+      build:
+        context: .
+        dockerfile: ./apps/consumer-service/Dockerfile
+      ports:
+        - "30210:30210"
