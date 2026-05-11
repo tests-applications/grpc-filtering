@@ -4,6 +4,8 @@ import { join } from 'path';
 import { ProducerServiceModule } from './producer-service.module';
 
 async function bootstrap() {
+  const URL = process.env.PRODUCER_URL;
+
   const app = await NestFactory.createMicroservice(ProducerServiceModule, {
     transport: Transport.GRPC,
     options: {
@@ -12,12 +14,12 @@ async function bootstrap() {
         __dirname,
         '../../../proto/user.proto'
       ),
-      url: process.env.OPTION_URL,
+      url: URL,
     },
   });
 
   await app.listen();
 
-  console.log('Producer gRPC service listening on 50051');
+  console.log(`Producer gRPC service listening on ${URL}`);
 }
 bootstrap();

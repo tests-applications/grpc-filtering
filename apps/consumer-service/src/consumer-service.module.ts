@@ -22,7 +22,7 @@ import { join } from 'path';
               __dirname,
               '../../../proto/user.proto'
             ),
-            url: configService.get<string>('OPTION_URL'),
+            url: configService.get<string>('PRODUCER_URL'),
           },
         })
       },

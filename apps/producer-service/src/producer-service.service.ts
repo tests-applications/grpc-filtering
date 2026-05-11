@@ -1,12 +1,12 @@
 import {
   Injectable,
-  InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
 import { join } from 'path';
 import * as fs from 'fs/promises';
 import { ConfigService } from '@nestjs/config';
 import { User } from './producer-service.interface';
+import { RpcException } from '@nestjs/microservices';
 
 
 @Injectable()
@@ -19,13 +19,13 @@ export class ProducerService {
 
   async getFilteredUsers() {
     try {
-      const file = await fs.readFile(
-        join(
-          process.cwd(),
-          this.configService.get<string>('USERS_FILE_PATH')
-        ),
-        'utf8'
-      );
+      const path = this.configService.get<string>('USERS_FILE_PATH');
+
+      this.logger.log(`Reading file: ${path}`);
+
+      const file = await fs.readFile(path, 'utf8');
+
+      this.logger.log(`File loaded successfully`);
 
       const users: User[] = JSON.parse(file);
 
@@ -37,7 +37,7 @@ export class ProducerService {
     } catch (error) {
       this.logger.error('Failed to process users.json', error.stack);
 
-      throw new InternalServerErrorException('Failed to process users');
+      throw new RpcException('Failed to process users');
     }
   }
 }

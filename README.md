@@ -65,6 +65,6 @@ docker compose down
 
 ```env
 PORT=30110
-OPTION_URL=0.0.0.0:50051
-USERS_FILE_PATH=apps/producer-service/src/data/users.json
+PRODUCER_URL=0.0.0.0:50051
+USERS_FILE_PATH=/data/users.json
 ```

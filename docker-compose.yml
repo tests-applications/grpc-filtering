@@ -1,20 +1,35 @@
 services:
-  consumer-service:
-    container_name: consumer-service
-    build:
-      context: .
-      dockerfile: ./apps/consumer-service/Dockerfile
-    environment:
-      OPTION_URL: producer-service:50051
-      PORT: 30110
-      USERS_FILE_PATH: apps/producer-service/src/data/users.json
-    ports:
-      - "30110:30110"
-
   producer-service:
     container_name: producer-service
     build:
       context: .
       dockerfile: ./apps/producer-service/Dockerfile
     environment:
-      USERS_FILE_PATH: apps/producer-service/src/data/users.json
+      USERS_FILE_PATH: /data/users.json
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./apps/producer-service/src/data:/data:ro
+    networks:
+      - grpc-network
+    restart: unless-stopped
+
+  consumer-service:
+    container_name: consumer-service
+    build:
+      context: .
+      dockerfile: ./apps/consumer-service/Dockerfile
+    environment:
+      PRODUCER_URL: producer-service:50051
+      PORT: 30110
+    ports:
+      - "30110:30110"
+    depends_on:
+      - producer-service
+    networks:
+      - grpc-network
+    restart: unless-stopped
+
+networks:
+  grpc-network:
+    driver: bridge
