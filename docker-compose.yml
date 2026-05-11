@@ -1,18 +1,20 @@
 services:
+  consumer-service:
+    container_name: consumer-service
+    build:
+      context: .
+      dockerfile: ./apps/consumer-service/Dockerfile
+    environment:
+      OPTION_URL: producer-service:50051
+      PORT: 30110
+      USERS_FILE_PATH: apps/producer-service/src/data/users.json
+    ports:
+      - "30110:30110"
+
   producer-service:
     container_name: producer-service
     build:
       context: .
       dockerfile: ./apps/producer-service/Dockerfile
-    ports:
-      - "30110:30110"
     environment:
-      OPTION_URL: consumer-service:50051
-
-  consumer-service:
-      container_name: consumer-service
-      build:
-        context: .
-        dockerfile: ./apps/consumer-service/Dockerfile
-      ports:
-        - "30210:30210"
+      USERS_FILE_PATH: apps/producer-service/src/data/users.json

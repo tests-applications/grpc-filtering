@@ -12,7 +12,7 @@ async function bootstrap() {
         __dirname,
         '../../../proto/user.proto'
       ),
-      url: '0.0.0.0:50051',
+      url: process.env.OPTION_URL,
     },
   });
 
